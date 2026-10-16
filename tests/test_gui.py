@@ -191,8 +191,10 @@ def test_inline_choices_persist_and_remove(tmp_path):
     w.remove_job(job);app.processEvents();assert not w.jobs and w.queue.topLevelItemCount()==0
     w.close();w.deleteLater();app.processEvents()
 
-def test_safari_settings_migrate(tmp_path):
+def test_safari_settings_migrate(tmp_path,monkeypatch):
     import json
+    import app as appmod
+    monkeypatch.setattr(appmod.sys,'platform','win32')
     cfg=dict(DEFAULTS,cookies_browser='safari')
     (tmp_path/'state.json').write_text(json.dumps(dict(settings=cfg,queue=[dict(id='a',title='t',url='https://vimeo.com/1',status='paused',config=cfg)],history=[])))
     s=Store(tmp_path);assert s.data['settings']['cookies_browser']=='none' and s.data['queue'][0]['config']['cookies_browser']=='none'

@@ -2,7 +2,7 @@ from pathlib import Path
 import errno
 import subprocess
 import pytest
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QUrl
 from PySide6.QtWidgets import QMessageBox,QInputDialog,QFileDialog,QDialog
 from PySide6.QtTest import QTest
 from app import Window,Store
@@ -54,9 +54,11 @@ def test_selected_menu_and_copy_link(tmp_path):
 def test_show_folder_and_download_page(tmp_path,monkeypatch):
     w=Window(Store(tmp_path));record,source=completed(w,tmp_path);calls=[]
     monkeypatch.setattr(actions.subprocess,'Popen',lambda command,**kwargs:calls.append(command))
-    actions.show_in_folder(w,record)
-    assert calls[0][-1]==str(source)
     opened=[];monkeypatch.setattr(actions.QDesktopServices,'openUrl',lambda url:opened.append(url.toString()) or True)
+    actions.show_in_folder(w,record)
+    if actions.os.name=='nt':assert calls[0][-1]==str(source)
+    else:assert opened==[QUrl.fromLocalFile(str(source.absolute().parent)).toString()]
+    opened.clear()
     menu=w.create_row_menu(w.queue.visualItemRect(w._queue_items['0']).center())
     next(a for a in menu.actions() if a.text()=='Open download page').trigger()
     assert opened==[record['url']]
