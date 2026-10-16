@@ -28,8 +28,9 @@ from PySide6.QtWidgets import (QApplication, QSizePolicy, QMainWindow, QWidget, 
     QGroupBox, QProgressBar, QTextEdit, QAbstractItemView, QScrollArea, QDialog, QStyledItemDelegate, QMenu, QToolButton)
 
 APP_NAME = 'Orvanta Video Downloader'
-DEVELOPER = 'Ahmed Eladwy'
-DEVELOPER_EMAIL = 'eladwy.ahmed@gmail.com'
+DEVELOPER = 'oOViperXOo'
+DEVELOPER_URL = 'https://github.com/oOViperXOo'
+REPOSITORY_URL = 'https://github.com/oOViperXOo/video-downloader-desktop'
 
 def asset_path(name):
     return Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parent)) / name
@@ -232,7 +233,12 @@ class Window(QMainWindow):
         menu.addAction('About', self.show_about)
         self.app_more.setMenu(menu); self.app_more.setPopupMode(QToolButton.InstantPopup)
     def show_about(self):
-        QMessageBox.about(self, 'About '+APP_NAME, f'{APP_NAME}\n\nDeveloped by {DEVELOPER}\n{DEVELOPER_EMAIL}\n\nPowered by yt-dlp and FFmpeg.')
+        from release_updates import APP_VERSION
+        QMessageBox.about(self, 'About '+APP_NAME,
+            f'<b>{APP_NAME}</b><br>Version {APP_VERSION}'
+            f'<p>Developed by <a href="{DEVELOPER_URL}">{DEVELOPER}</a></p>'
+            f'<p><a href="{REPOSITORY_URL}">GitHub repository</a></p>'
+            '<p>Powered by yt-dlp and FFmpeg.</p>')
     def open_advanced(self):
         if self._settings_snapshot is None:
             self._settings_snapshot=self.config()

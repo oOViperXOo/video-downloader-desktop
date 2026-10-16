@@ -24,12 +24,12 @@ SetCompressor /SOLID lzma
 SetCompressorDictSize 32
 Icon "..\assets\app-icon.ico"
 UninstallIcon "..\assets\app-icon.ico"
-VIProductVersion "1.0.1.0"
+VIProductVersion "1.0.2.0"
 VIAddVersionKey "ProductName" "Orvanta Video Downloader"
-VIAddVersionKey "CompanyName" "Orvanta - Ahmed Eladwy"
+VIAddVersionKey "CompanyName" "Orvanta - oOViperXOo"
 VIAddVersionKey "FileDescription" "Orvanta Video Downloader Setup"
-VIAddVersionKey "FileVersion" "1.0.1"
-VIAddVersionKey "LegalCopyright" "Ahmed Eladwy"
+VIAddVersionKey "FileVersion" "1.0.2"
+VIAddVersionKey "LegalCopyright" "oOViperXOo"
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OrvantaVideoDownloader.exe"
 !define MUI_FINISHPAGE_RUN_NOTCHECKED
@@ -139,8 +139,10 @@ Function un.onInit
 FunctionEnd
 
 Section "Prepare app"
-  ; Earlier branding has its own uninstaller/file manifest. Do not mix bundles.
-  IfFileExists "$INSTDIR\OrvantaVideoDownloader.exe" mode_conflict 0
+  ; Do not mix this bundle with another executable distribution.
+  IfFileExists "$INSTDIR\*.exe" 0 format_checked
+  IfFileExists "$INSTDIR\OrvantaVideoDownloader.exe" format_checked mode_conflict
+  format_checked:
   ; Do not switch an existing folder between modes and strand its user data.
   ${If} $Mode == "portable"
     IfFileExists "$INSTDIR\Uninstall.exe" mode_conflict 0
@@ -178,13 +180,13 @@ Section "Prepare app"
     CreateShortcut "$SMPROGRAMS\Orvanta Video Downloader.lnk" "$INSTDIR\OrvantaVideoDownloader.exe"
     WriteRegStr HKCU "Software\Orvanta\VideoDownloader" "InstallDir" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayName" "Orvanta Video Downloader"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "Publisher" "Orvanta - Ahmed Eladwy"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.1"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "Publisher" "Orvanta - oOViperXOo"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.2"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayIcon" "$INSTDIR\OrvantaVideoDownloader.exe,0"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "UninstallString" '$\"$INSTDIR\Uninstall.exe$\"'
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "QuietUninstallString" '$\"$INSTDIR\Uninstall.exe$\" /S'
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "HelpLink" "mailto:eladwy.ahmed@gmail.com"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "HelpLink" "https://github.com/oOViperXOo/video-downloader-desktop"
     WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "NoModify" 1
     WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "NoRepair" 1
   ${EndIf}

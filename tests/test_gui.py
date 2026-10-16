@@ -66,7 +66,7 @@ def test_generic_branding_and_settings_roundtrip(tmp_path):
     w=Window(Store(tmp_path))
     assert appmod.APP_NAME=='Orvanta Video Downloader' and w.windowTitle()==appmod.APP_NAME
     assert w.tray.toolTip()=='Orvanta Video Downloader — click to restore'
-    assert appmod.DEVELOPER=='Ahmed Eladwy' and appmod.DEVELOPER_EMAIL=='eladwy.ahmed@gmail.com'
+    assert appmod.DEVELOPER=='oOViperXOo'
     c=w.config()
     assert c['connections']==4 and c['aria2']=='off' and c['resume'] is True and c['cookies_browser']=='none'
     w.connections.setCurrentText('8'); w.aria2.setCurrentText('off'); w.cookies_browser.setCurrentText('firefox'); w.proxy.setText('socks5://10.0.0.5:1080')
@@ -77,6 +77,20 @@ def test_generic_branding_and_settings_roundtrip(tmp_path):
     assert ec['connections']==1 and ec['external_downloader']=='off' and ec['cookies_from_browser']=='firefox' and ec['proxy']=='socks5://10.0.0.5:1080'
     import engine; engine.build_options(ec)
     w.close(); w.deleteLater(); app.processEvents()
+
+def test_about_uses_public_github_identity(tmp_path,monkeypatch):
+    import app as appmod
+    calls=[]
+    monkeypatch.setattr(appmod.QMessageBox,'about',lambda parent,title,text:calls.append((title,text)))
+    w=Window(Store(tmp_path));w.show_about()
+    title,text=calls[0]
+    assert title=='About Orvanta Video Downloader'
+    assert '>oOViperXOo</a>' in text
+    assert 'href="https://github.com/oOViperXOo"' in text
+    assert 'href="https://github.com/oOViperXOo/video-downloader-desktop"' in text
+    assert 'Ahmed Eladwy' not in text and 'gmail.com' not in text and 'mailto:' not in text
+    w.close();w.deleteLater();app.processEvents()
+
 
 def test_archive_token_independent_of_speed_settings(tmp_path):
     import app as appmod

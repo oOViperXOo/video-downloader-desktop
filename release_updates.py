@@ -8,7 +8,7 @@ from threading import BoundedSemaphore, Thread
 from urllib.parse import urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
-APP_VERSION = '1.0.1'
+APP_VERSION = '1.0.2'
 MAX_MANIFEST_BYTES = 65536
 
 class UpdateCheckError(ValueError):

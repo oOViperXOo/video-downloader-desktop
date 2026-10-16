@@ -12,8 +12,7 @@ root=Path(__file__).resolve().parents[1]
 setup=Path(sys.argv[1]).resolve();payload=Path(sys.argv[2]).resolve()
 target=(root/'test-temp'/('installed QA '+uuid.uuid4().hex)).resolve()
 assert target.is_relative_to(root/'test-temp') and not target.exists()
-keys=[r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader',
-      r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader']
+keys=[r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader']
 def registry_snapshot():
     result={}
     for key in keys:
@@ -87,7 +86,7 @@ print('Portable extraction: PASS (one EXE before/after startup, hash matches, Ap
 
 legacy=(root/'test-temp'/('legacy branding QA '+uuid.uuid4().hex)).resolve()
 legacy.mkdir()
-old_executable=legacy/'OrvantaVideoDownloader.exe'
+old_executable=legacy/'PreviousDownloader.exe'
 old_executable.write_bytes(b'preserve earlier installation')
 for mode in ('portable','installed'):
     command=subprocess.list2cmdline([str(setup),'/S','/TESTMODE=1','/MODE='+mode])+' /D='+str(legacy)

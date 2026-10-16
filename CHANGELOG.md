@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - public developer identity and repository preview
+
+- About now credits oOViperXOo with clickable GitHub profile and repository links; the personal name/email are removed.
+- Windows metadata and Setup use the same public developer identity.
+- Added a current Windows app screenshot to the GitHub README using illustrative queue entries.
+- Corrected existing Git commit attribution to ViperX under the oOViperXOo account.
+
 ## 1.0.1 - Orvanta branding
 
 - Renamed the product to Orvanta Video Downloader, under the Orvanta app family.
