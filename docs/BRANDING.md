@@ -9,7 +9,6 @@ Orvanta is a coined name without an established dictionary meaning. No trademark
 - Display name: Orvanta Video Downloader.
 - Artifact prefix: OrvantaVideoDownloader.
 - Public developer identity: [oOViperXOo](https://github.com/oOViperXOo).
-- Git commit display name: ViperX, using the oOViperXOo account's GitHub noreply address.
 - About links to the developer profile and repository; personal name/email are not displayed.
 - The existing text-free download/play icon is retained for this product.
 - The compact main window remains free of a redundant brand heading. Branding appears in the window title, tray, About, setup and executable metadata.
@@ -20,4 +19,4 @@ The Qt application/organization identifiers remain stable to preserve the AppDat
 
 New installations use an Orvanta folder and uninstall entry. Setup refuses a destination containing another executable distribution; the old installation and its uninstaller are preserved. The repository URL is unchanged.
 
-Public release 1.0.2 is for Windows x64. Source history and documentation use Orvanta throughout. Obsolete releases containing the previous branding are retired.
+Public release 1.0.2 is for Windows x64.

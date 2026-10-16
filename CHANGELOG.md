@@ -9,9 +9,8 @@
 ## 1.0.2
 
 - Public developer identity and clickable GitHub links in About.
-- Complete Orvanta branding cleanup, including source history and release assets.
+- Consistent Orvanta branding across the app and Windows packages.
 - Current Windows screenshot in the README.
-- Commit attribution corrected to ViperX under oOViperXOo.
 
 [Release notes](docs/releases/v1.0.2.md)
 
