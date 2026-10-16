@@ -1,10 +1,14 @@
 # Orvanta Video Downloader
 
-Developed by Ahmed Eladwy, eladwy.ahmed@gmail.com.
+Developed by [oOViperXOo](https://github.com/oOViperXOo).
 
 Orvanta is the umbrella brand; this app is **Orvanta Video Downloader**. The text-free download/play icon remains the product icon. Existing settings, queue, history, browser pairing and single-instance activation retain their compatible internal identifiers. The new installer uses its own Orvanta folder and uninstall entry; an older installed version is preserved.
 
 Download the latest Windows release from [GitHub Releases](https://github.com/oOViperXOo/video-downloader-desktop/releases/latest). The standalone Portable EXE is recommended; Setup also offers an installed mode.
+
+![Orvanta Video Downloader on Windows](docs/screenshots/orvanta-downloads.png)
+
+*Actual app interface with illustrative queue entries.*
 
 ## Compact interface
 
