@@ -20,9 +20,6 @@ def main():
     paths.append(root/'docs'/'BRANDING.md')
     paths.extend((root/'docs'/'screenshots').glob('orvanta-*.png'))
     paths.extend((root/'docs'/'releases').glob('*.md'))
-    paths.extend((root/'docs'/'reports').glob('performance-*.md'))
-    paths.extend((root/'docs'/'reports').glob('performance-*.json'))
-    paths.extend((root/'docs'/'reports').glob('unified-setup-*.md'))
     paths=sorted(set(p for p in paths if p.is_file()))
     output.parent.mkdir(parents=True,exist_ok=True)
     manifest={p.relative_to(root).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
