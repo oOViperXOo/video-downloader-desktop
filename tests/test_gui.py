@@ -194,7 +194,8 @@ def test_inline_choices_persist_and_remove(tmp_path):
 def test_safari_settings_migrate(tmp_path,monkeypatch):
     import json
     import app as appmod
-    monkeypatch.setattr(appmod.sys,'platform','win32')
+    from types import SimpleNamespace
+    monkeypatch.setattr(appmod,'sys',SimpleNamespace(**{**vars(appmod.sys),'platform':'win32'}))
     cfg=dict(DEFAULTS,cookies_browser='safari')
     (tmp_path/'state.json').write_text(json.dumps(dict(settings=cfg,queue=[dict(id='a',title='t',url='https://vimeo.com/1',status='paused',config=cfg)],history=[])))
     s=Store(tmp_path);assert s.data['settings']['cookies_browser']=='none' and s.data['queue'][0]['config']['cookies_browser']=='none'
@@ -233,7 +234,8 @@ def test_queue_feedback_and_loading_controls(tmp_path):
 
 def test_safari_profile_settings_migrate_on_windows(tmp_path, monkeypatch):
     import app as appmod, json
-    monkeypatch.setattr(appmod.sys,'platform','win32')
+    from types import SimpleNamespace
+    monkeypatch.setattr(appmod,'sys',SimpleNamespace(**{**vars(appmod.sys),'platform':'win32'}))
     for browser in ('Safari', ' safari:Default ', 'safari+keychain:profile'):
         cfg=dict(DEFAULTS,cookies_browser=browser)
         (tmp_path/'state.json').write_text(json.dumps(dict(settings=cfg,queue=[dict(id='a',title='t',url='https://vimeo.com/1',status='paused',config=cfg)],history=[])))

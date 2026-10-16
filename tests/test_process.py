@@ -67,7 +67,9 @@ def test_stop_cleans_child_tree(tmp_path):
             if psutil.Process(pid).status()==psutil.STATUS_ZOMBIE: break
         except psutil.NoSuchProcess: break
         app.processEvents(); time.sleep(.01)
-    assert not psutil.pid_exists(pid) or psutil.Process(pid).status()==psutil.STATUS_ZOMBIE
+    try:status=psutil.Process(pid).status()
+    except psutil.NoSuchProcess:status=None
+    assert status in (None,psutil.STATUS_ZOMBIE)
     p.deleteLater(); QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete)
 
 def test_bad_config_does_not_deadlock(tmp_path):

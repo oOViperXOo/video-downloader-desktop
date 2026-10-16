@@ -19,6 +19,7 @@ def test_manifest_records_exact_artifact_and_source_changes(tmp_path, monkeypatc
     for env in ('VD_FFMPEG', 'VD_FFPROBE', 'VD_JSBIN', 'VD_ARIA'):
         monkeypatch.delenv(env, raising=False)
     monkeypatch.setattr(manifest.subprocess, 'run', lambda *a, **kw: SimpleNamespace(stdout='ffmpeg version test', stderr='', returncode=0))
+    monkeypatch.setattr(manifest.platform,'platform',lambda:'test-platform')
     first = manifest.create_manifest(artifact, tmp_path)
     assert first['artifact']['path'] == str(artifact.resolve())
     assert first['artifact']['sha256'] == hashlib.sha256(b'new artifact').hexdigest()

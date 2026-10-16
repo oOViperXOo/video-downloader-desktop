@@ -101,7 +101,7 @@ def test_background_move_updates_all_records(tmp_path,monkeypatch):
 
 def test_cross_volume_failed_copy_keeps_original(tmp_path,monkeypatch):
     source=tmp_path/'a.mkv';source.write_bytes(b'original');destination=tmp_path/'b.mkv'
-    monkeypatch.setattr(actions.os,'rename',lambda *args:(_ for _ in ()).throw(OSError(errno.EXDEV,'different volume')))
+    monkeypatch.setattr(actions.os,'rename' if actions.os.name=='nt' else 'link',lambda *args:(_ for _ in ()).throw(OSError(errno.EXDEV,'different volume')))
     monkeypatch.setattr(actions.shutil,'copyfileobj',lambda *args:(_ for _ in ()).throw(OSError('disk full')))
     with pytest.raises(OSError):actions.move_without_overwrite(source,destination)
     assert source.read_bytes()==b'original' and not destination.exists()
