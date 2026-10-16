@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Video Downloader</title><link rel="stylesheet" href="popup.css"></head>
+<body>
+<header>
+  <div class="title"><span class="logo" aria-hidden="true"></span><span>Video Downloader</span></div>
+  <span id="status" class="chip">checking...</span>
+</header>
+<div id="notice" class="notice" hidden></div>
+<main id="list" aria-live="polite"></main>
+<section id="detect-cta" class="cta" hidden>
+  <p>Automatic detection of video streams is off. It needs permission to see network responses on websites. Nothing is read or stored outside this browser.</p>
+  <button id="enable-detect" class="primary">Enable detection</button>
+</section>
+<footer>
+  <label class="check"><input type="checkbox" id="cookies"> Send my cookies for this site (logged-in videos)</label>
+  <a href="#" id="options">Options</a>
+</footer>
+<script src="lib/detect.js"></script><script src="lib/client.js"></script><script src="popup.js"></script>
+</body></html>

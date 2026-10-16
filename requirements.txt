@@ -1,0 +1,8 @@
+PySide6>=6.8,<6.11
+yt-dlp>=2026.8.19
+yt-dlp-ejs
+pycryptodomex
+brotli
+websockets
+mutagen
+psutil>=5.9,<8

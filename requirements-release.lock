@@ -1,0 +1,20 @@
+# Installed Windows Python 3.14 builder snapshot, recorded 2026-10-15.
+# Not a universal cross-platform lock; external binary hashes live in release manifests.
+altgraph==0.17.5
+brotli==1.2.0
+mutagen==1.48.1
+packaging==26.3
+pefile==2024.8.26
+psutil==7.2.2
+pycryptodomex==3.24.1
+pyinstaller==6.22.3
+pyinstaller-hooks-contrib==2026.8
+PySide6==6.10.3
+PySide6_Addons==6.10.3
+PySide6_Essentials==6.10.3
+pywin32-ctypes==0.2.3
+setuptools==84.0.0
+shiboken6==6.10.3
+websockets==17.2
+yt-dlp==2026.8.19
+yt-dlp-ejs==0.8.0
