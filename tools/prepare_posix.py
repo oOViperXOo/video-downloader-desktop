@@ -22,7 +22,7 @@ def main():
     arguments=['cmake','-S',str(source),'-B',str(source/'build'),'-DCMAKE_BUILD_TYPE=Release','-DBUILD_SHARED_LIBS=OFF']
     if sys.platform=='darwin':arguments+=['-DCMAKE_OSX_DEPLOYMENT_TARGET=15.0']
     subprocess.run(arguments,check=True)
-    subprocess.run(['cmake','--build',str(source/'build'),'--config','Release','--target','qjs','--parallel','2'],check=True)
+    subprocess.run(['cmake','--build',str(source/'build'),'--config','Release','--target','qjs_exe','--parallel','2'],check=True)
     shutil.copy2(source/'build/qjs',output/'qjs');(output/'qjs').chmod(0o755)
     assert subprocess.check_output([str(output/'qjs'),'--eval','print(1+1)'],text=True).strip()=='2'
     licenses=output/'licenses';licenses.mkdir(exist_ok=True)

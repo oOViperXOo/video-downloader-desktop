@@ -1,4 +1,4 @@
-from PySide6.QtCore import QCoreApplication,QEvent
+from PySide6.QtCore import QCoreApplication,QEvent,QElapsedTimer
 from PySide6.QtTest import QTest
 from app import Window,Store,DEFAULTS
 from test_process import app
@@ -38,7 +38,11 @@ def test_removing_opened_row_releases_its_unused_controls(tmp_path):
 
 
 def test_progress_is_coalesced_and_done_cannot_be_overwritten(tmp_path):
-    w=Window(Store(tmp_path));w.jobs.extend([job(0),job(1)]);w.refresh_queue()
+    w=Window(Store(tmp_path));w.jobs.extend([job(0),job(1)]);w.refresh_queue();w.show()
+    def wait_for(predicate):
+        timer=QElapsedTimer();timer.start()
+        while not predicate() and timer.elapsed()<2000:QTest.qWait(10)
+        assert predicate()
     calls=[]
     for key,row in w.row_widgets.items():
         original=row.update_state
@@ -46,9 +50,9 @@ def test_progress_is_coalesced_and_done_cannot_be_overwritten(tmp_path):
     for i in range(100):
         for record in w.jobs:w.handle_engine_event(dict(type='progress',percent=i,total=100,downloaded=i,speed=1,eta=1),record)
     assert all(record['percent']==99 for record in w.jobs) and calls==[]
-    QTest.qWait(130);assert sorted(calls)==['0','1']
+    wait_for(lambda:len(calls)==2);assert sorted(calls)==['0','1']
     record=w.jobs[0];w.handle_engine_event(dict(type='progress',percent=80,total=100,downloaded=80),record)
     w.handle_engine_event(dict(type='done',path='file.mp4',errors=[],returncode=0),record)
-    QTest.qWait(130)
+    wait_for(lambda:not w._progress_timer.isActive())
     assert record['status']=='done' and record['percent']==100 and w.row_widgets['0'].detail.text()=='Completed'
     finish(w)
