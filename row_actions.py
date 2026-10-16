@@ -43,7 +43,7 @@ def open_record(w,record):
     path=existing_file(record)
     if path is None:message(w,'This downloaded file is no longer available. It may have been moved or deleted.');return
     try:
-        if not QDesktopServices.openUrl(QUrl.fromLocalFile(str(path.absolute()))):message(w,'Windows could not open this file. Choose an app for its file type and try again.')
+        if not QDesktopServices.openUrl(QUrl.fromLocalFile(str(path.absolute()))):message(w,'Could not open this file. Choose an app for its file type and try again.')
     except (OSError,ValueError) as exc:message(w,'Could not open the file: '+str(exc))
 
 
@@ -154,15 +154,22 @@ def move_files(w,records):
 def delete_files(w,records):
     sources=list(dict.fromkeys(editable_file(w,r) for r in records))
     if not sources or None in sources:message(w,'A selected file is missing or currently in use.');return
-    text='Permanently delete '+str(len(sources))+' file(s) from disk?\n\n'+'\n'.join(str(p) for p in sources[:5])+'\n\nDownload records will remain. This cannot be undone.'
+    text='Permanently delete '+str(len(sources))+' file(s) from disk and remove their download records?\n\n'+'\n'.join(str(p) for p in sources[:5])+'\n\nThis cannot be undone.'
     if QMessageBox.warning(w,'Delete file',text,QMessageBox.Yes|QMessageBox.No,QMessageBox.No)!=QMessageBox.Yes:return
-    errors=[]
+    errors=[];deleted=set()
     for source in sources:
         try:
             if in_use(w,source):raise OSError('File is currently in use.')
             if not source.is_file():raise FileNotFoundError('File is no longer available.')
             source.unlink()
+            deleted.add(os.path.normcase(os.path.abspath(source)))
         except OSError as exc:errors.append(source.name+': '+str(exc))
+    def keep(record):
+        return not (record.get('status') in COMPLETED and record.get('path') and
+                    os.path.normcase(os.path.abspath(Path(record['path']).expanduser())) in deleted)
+    w.jobs[:]=[record for record in w.jobs if keep(record)]
+    w.history[:]=[record for record in w.history if keep(record)]
+    w.store.save()
     w.refresh_history()
     if errors:message(w,'Some files could not be deleted:\n'+'\n'.join(errors))
 

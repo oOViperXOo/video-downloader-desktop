@@ -68,7 +68,8 @@ def build_preferences(w, outer):
     for key in ('subtitles','embed_subtitles'): w.checks[key].toggled.connect(subtitles_changed)
     subtitles_changed()
     form=page('Login and network','Use your browser login for videos you can already watch. Browser cookie access may require closing the browser.')
-    w.cookies_browser=w.combo(['none','chrome','firefox','edge','brave','chromium','opera','vivaldi'],cfg['cookies_browser']); form.addRow('Browser login (optional)',w.cookies_browser)
+    from browser_login import browser_choices
+    w.cookies_browser=w.combo(['none',*browser_choices()],cfg['cookies_browser']); form.addRow('Browser login (optional)',w.cookies_browser)
     from browser_login import SITES,open_sign_in
     w.login_site=w.combo(list(SITES),'YouTube');form.addRow('Account website',w.login_site)
     login_actions=QHBoxLayout()

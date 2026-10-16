@@ -37,7 +37,7 @@ def test_open_failure_is_graceful(tmp_path,monkeypatch):
     w=Window(Store(tmp_path));record,source=completed(w,tmp_path);messages=[]
     monkeypatch.setattr(actions.QDesktopServices,'openUrl',lambda url:False)
     monkeypatch.setattr(QMessageBox,'information',lambda *args:messages.append(args[2]))
-    actions.open_record(w,record);assert 'could not open' in messages[0]
+    actions.open_record(w,record);assert 'could not open' in messages[0].lower()
     finish(w)
 
 
@@ -105,12 +105,33 @@ def test_cross_volume_failed_copy_keeps_original(tmp_path,monkeypatch):
     assert source.read_bytes()==b'original' and not destination.exists()
 
 
-def test_delete_requires_confirmation_and_retains_record(tmp_path,monkeypatch):
+def test_delete_requires_confirmation_and_removes_persisted_record(tmp_path,monkeypatch):
     w=Window(Store(tmp_path));record,source=completed(w,tmp_path)
     monkeypatch.setattr(QMessageBox,'warning',lambda *args:QMessageBox.No)
-    actions.delete_files(w,[record]);assert source.exists()
+    actions.delete_files(w,[record]);assert source.exists() and record in w.jobs and w.history
     monkeypatch.setattr(QMessageBox,'warning',lambda *args:QMessageBox.Yes)
-    actions.delete_files(w,[record]);assert not source.exists() and record in w.jobs and w.history
+    actions.delete_files(w,[record]);assert not source.exists() and not w.jobs and not w.history
+    assert w.queue.topLevelItemCount()==0
+    restored=Store(tmp_path);assert not restored.data['queue'] and not restored.data['history']
+    finish(w)
+
+
+def test_delete_partial_failure_keeps_failed_file_and_its_row(tmp_path,monkeypatch):
+    w=Window(Store(tmp_path));first,source=completed(w,tmp_path)
+    blocked=tmp_path/'blocked.mp4';blocked.write_bytes(b'keep')
+    second=job(1);second.update(path=str(blocked),status='done');w.jobs.append(second)
+    w.history.append(dict(title=second['title'],path=str(blocked),status='done',url=second['url']))
+    w.refresh_queue();messages=[];unlink=Path.unlink
+    def remove(path,*args,**kwargs):
+        if path==blocked:raise PermissionError('File is locked')
+        return unlink(path,*args,**kwargs)
+    monkeypatch.setattr(Path,'unlink',remove)
+    monkeypatch.setattr(QMessageBox,'warning',lambda *args:QMessageBox.Yes)
+    monkeypatch.setattr(actions,'message',lambda parent,text:messages.append(text))
+    actions.delete_files(w,[first,second])
+    assert not source.exists() and blocked.exists()
+    assert w.jobs==[second] and len(w.history)==1 and Path(w.history[0]['path'])==blocked
+    assert w.queue.topLevelItemCount()==1 and messages and 'locked' in messages[0]
     finish(w)
 
 

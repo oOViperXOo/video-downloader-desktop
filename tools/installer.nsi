@@ -24,11 +24,11 @@ SetCompressor /SOLID lzma
 SetCompressorDictSize 32
 Icon "..\assets\app-icon.ico"
 UninstallIcon "..\assets\app-icon.ico"
-VIProductVersion "1.0.2.0"
+VIProductVersion "1.0.3.0"
 VIAddVersionKey "ProductName" "Orvanta Video Downloader"
 VIAddVersionKey "CompanyName" "Orvanta - oOViperXOo"
 VIAddVersionKey "FileDescription" "Orvanta Video Downloader Setup"
-VIAddVersionKey "FileVersion" "1.0.2"
+VIAddVersionKey "FileVersion" "1.0.3"
 VIAddVersionKey "LegalCopyright" "oOViperXOo"
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OrvantaVideoDownloader.exe"
@@ -181,7 +181,7 @@ Section "Prepare app"
     WriteRegStr HKCU "Software\Orvanta\VideoDownloader" "InstallDir" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayName" "Orvanta Video Downloader"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "Publisher" "Orvanta - oOViperXOo"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.2"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.3"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayIcon" "$INSTDIR\OrvantaVideoDownloader.exe,0"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "UninstallString" '$\"$INSTDIR\Uninstall.exe$\"'

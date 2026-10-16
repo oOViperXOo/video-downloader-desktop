@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+- Deleting downloaded files now removes their queue/history rows; failed deletions retain their records.
+- GitHub Actions builds and verifies Linux x64 archives and macOS Apple Silicon app/DMG packages.
+- Native browser discovery on Linux/macOS; Safari login selection on macOS.
+
 ## 1.0.2
 
 - Public developer identity and clickable GitHub links in About.

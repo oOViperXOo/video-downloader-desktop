@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd -- "$(dirname -- "$0")"
+case "$(uname -s)" in Linux|Darwin) ;; *) echo 'Use build.bat on Windows.'; exit 1 ;; esac
 [ -d .venv ] || python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt pyinstaller
-args=()
-if command -v ffmpeg >/dev/null; then args+=(--add-binary "$(command -v ffmpeg):."); else echo 'Install FFmpeg before building for bundled conversion support.'; exit 1; fi
-if command -v aria2c >/dev/null; then args+=(--add-binary "$(command -v aria2c):."); else echo 'Note: aria2c not found - building without the multi-connection engine (built-in fragment downloader is used instead). aria2 is GPLv2: bundling it means shipping its license/source offer.'; fi
-if command -v ffprobe >/dev/null; then args+=(--add-binary "$(command -v ffprobe):."); else echo 'ffprobe required'; exit 1; fi
-runtime=$(command -v qjs || command -v deno || true)
-[ -n "$runtime" ] || { echo 'Install QuickJS (qjs) or Deno first'; exit 1; }
-.venv/bin/python -m PyInstaller --noconfirm --clean --onefile --name OrvantaVideoDownloader --collect-all yt_dlp --collect-all yt_dlp_ejs --add-binary "$runtime:." --exclude-module tkinter --exclude-module unittest --exclude-module curl_cffi --hidden-import engine "${args[@]}" app.py
-echo 'Built dist/OrvantaVideoDownloader. Linux system libraries and a graphical desktop are still required.'
+.venv/bin/python -m pip install -r requirements-posix.lock
+for tool in ffmpeg ffprobe aria2c cmake git; do
+  command -v "$tool" >/dev/null || { echo "Install $tool before building."; exit 1; }
+done
+.venv/bin/python tools/prepare_posix.py
+export VD_FFMPEG="$(command -v ffmpeg)" VD_FFPROBE="$(command -v ffprobe)"
+export VD_ARIA="$(command -v aria2c)" VD_JSBIN="$PWD/build/posix/qjs"
+export PYINSTALLER_STRICT_BUNDLE_CODESIGN_ERROR=1
+if [ "$(uname -s)" = Darwin ]; then export MACOSX_DEPLOYMENT_TARGET=15.0; fi
+.venv/bin/python -m PyInstaller --noconfirm --clean OrvantaPosix.spec
+echo 'Native bundle built. Verify it, then run tools/package_posix.py to create release files.'

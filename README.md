@@ -9,7 +9,7 @@ Developed by [oOViperXOo](https://github.com/oOViperXOo).
 - **Setup.exe** — choose Portable or install for the current Windows user.
 
 Windows x64. Runtime dependencies are included; builds are currently unsigned.
-Linux and macOS packages are not available.
+Linux x64 and macOS Apple Silicon test builds use [GitHub Actions](https://github.com/oOViperXOo/video-downloader-desktop/actions/workflows/build-posix.yml). macOS builds are not notarized.
 
 ![Orvanta Video Downloader](docs/screenshots/orvanta-downloads.png)
 
@@ -40,6 +40,6 @@ node --test browser-extension/test/manifest.test.js browser-extension/test/logic
 
 Build on Windows with `build.bat`. To create both release formats, run
 `powershell -File tools/build_releases.ps1` after preparing dependencies.
-See [source/build instructions](SOURCE-ARCHIVE.md) and [signing/update setup](RELEASE-SETUP.md).
+See [Linux/macOS builds](docs/BUILDING.md), [source instructions](SOURCE-ARCHIVE.md) and [signing/update setup](RELEASE-SETUP.md).
 
 Download only content you have permission to save. DRM-protected content is unsupported.

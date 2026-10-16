@@ -18,6 +18,8 @@ def main():
             if p.suffix.lower() in allowed:paths.append(p)
     paths.append(root/'docs'/'PROJECT-LAYOUT.md')
     paths.append(root/'docs'/'BRANDING.md')
+    paths.append(root/'docs'/'BUILDING.md')
+    paths.extend((root/'.github'/'workflows').glob('*.yml'))
     paths.extend((root/'docs'/'screenshots').glob('orvanta-*.png'))
     paths.extend((root/'docs'/'releases').glob('*.md'))
     paths=sorted(set(p for p in paths if p.is_file()))
