@@ -17,6 +17,7 @@ def main():
             allowed=extensions|({'.png','.ico','.svg','.js','.json','.css','.html'} if directory in ('assets','browser-extension','tests') else set())
             if p.suffix.lower() in allowed:paths.append(p)
     paths.append(root/'docs'/'PROJECT-LAYOUT.md')
+    paths.append(root/'docs'/'BRANDING.md')
     paths.extend((root/'docs'/'releases').glob('*.md'))
     paths.extend((root/'docs'/'reports').glob('performance-*.md'))
     paths.extend((root/'docs'/'reports').glob('performance-*.json'))

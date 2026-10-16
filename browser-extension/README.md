@@ -1,7 +1,7 @@
-# Video Downloader Companion (browser extension) + app receiver patch
+# Orvanta Video Downloader Companion (browser extension) + app receiver patch
 
 Manifest V3 extension for Chrome and Edge (Firefox notes below) that finds video/audio on a page and sends it to the
-Video Downloader desktop app on the same computer. Not affiliated with, and uses no assets from, Internet Download Manager.
+Orvanta Video Downloader app on the same computer. Not affiliated with, and uses no assets from, Internet Download Manager.
 
 ```
 extension/        the extension (load this folder unpacked)
@@ -20,7 +20,7 @@ Required: `activeTab`, `scripting` (read video elements of the page you open the
 Optional, requested only when you press the button: all http/https sites (so it can see network responses for automatic detection) and `cookies`. No `tabs`, `downloads`, `history`, no content scripts, no remote code.
 
 ## Install (Chrome / Edge)
-1. App side first: start Video Downloader Desktop v3, Settings > Browser extension.
+1. App side first: start Orvanta Video Downloader, Settings > Browser extension.
 2. Open `chrome://extensions` (Edge: `edge://extensions`), turn on **Developer mode**.
 3. **Load unpacked** -> choose the `extension` folder.
 4. Pin the extension. In the app click **Pair browser** to get a code like `1234-5678`.

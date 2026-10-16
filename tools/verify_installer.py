@@ -12,7 +12,8 @@ root=Path(__file__).resolve().parents[1]
 setup=Path(sys.argv[1]).resolve();payload=Path(sys.argv[2]).resolve()
 target=(root/'test-temp'/('installed QA '+uuid.uuid4().hex)).resolve()
 assert target.is_relative_to(root/'test-temp') and not target.exists()
-keys=[r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader']
+keys=[r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader',
+      r'Software\Orvanta\VideoDownloader',r'Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader']
 def registry_snapshot():
     result={}
     for key in keys:
@@ -83,3 +84,16 @@ assert 'AppData' in result.stdout
 assert sorted(p.name for p in portable.iterdir())==['OrvantaVideoDownloader.exe']
 assert registry_snapshot()==before
 print('Portable extraction: PASS (one EXE before/after startup, hash matches, AppData state, no registration or uninstaller)')
+
+legacy=(root/'test-temp'/('legacy branding QA '+uuid.uuid4().hex)).resolve()
+legacy.mkdir()
+old_executable=legacy/'OrvantaVideoDownloader.exe'
+old_executable.write_bytes(b'preserve earlier installation')
+for mode in ('portable','installed'):
+    command=subprocess.list2cmdline([str(setup),'/S','/TESTMODE=1','/MODE='+mode])+' /D='+str(legacy)
+    result=subprocess.run(command,creationflags=flags,timeout=240)
+    assert result.returncode==2,'Earlier installation must require a separate folder'
+    assert list(legacy.iterdir())==[old_executable]
+    assert old_executable.read_bytes()==b'preserve earlier installation'
+assert registry_snapshot()==before
+print('Earlier installation: PASS (both modes refuse mixing brands and preserve old files/registration)')

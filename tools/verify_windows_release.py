@@ -16,6 +16,8 @@ def main():
             raise RuntimeError(f'{arguments}: exit={result.returncode}\n{result.stdout}\n{result.stderr}')
         if expected and expected not in result.stdout:
             raise RuntimeError(result.stdout + result.stderr)
+        if arguments==['--smoke-test'] and 'PRODUCT_NAME=Orvanta Video Downloader' not in result.stdout:
+            raise RuntimeError('Packaged application display name is incorrect')
         print(f'{arguments[0]}: PASS ({result.stdout.strip()})')
     print(f'Verified native Windows startup and hidden worker output: {executable}')
 

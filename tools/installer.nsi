@@ -24,11 +24,11 @@ SetCompressor /SOLID lzma
 SetCompressorDictSize 32
 Icon "..\assets\app-icon.ico"
 UninstallIcon "..\assets\app-icon.ico"
-VIProductVersion "1.0.0.0"
+VIProductVersion "1.0.1.0"
 VIAddVersionKey "ProductName" "Orvanta Video Downloader"
 VIAddVersionKey "CompanyName" "Orvanta - Ahmed Eladwy"
 VIAddVersionKey "FileDescription" "Orvanta Video Downloader Setup"
-VIAddVersionKey "FileVersion" "1.0.0"
+VIAddVersionKey "FileVersion" "1.0.1"
 VIAddVersionKey "LegalCopyright" "Ahmed Eladwy"
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OrvantaVideoDownloader.exe"
@@ -139,6 +139,8 @@ Function un.onInit
 FunctionEnd
 
 Section "Prepare app"
+  ; Earlier branding has its own uninstaller/file manifest. Do not mix bundles.
+  IfFileExists "$INSTDIR\OrvantaVideoDownloader.exe" mode_conflict 0
   ; Do not switch an existing folder between modes and strand its user data.
   ${If} $Mode == "portable"
     IfFileExists "$INSTDIR\Uninstall.exe" mode_conflict 0
@@ -177,7 +179,7 @@ Section "Prepare app"
     WriteRegStr HKCU "Software\Orvanta\VideoDownloader" "InstallDir" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayName" "Orvanta Video Downloader"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "Publisher" "Orvanta - Ahmed Eladwy"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.0"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayVersion" "1.0.1"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "DisplayIcon" "$INSTDIR\OrvantaVideoDownloader.exe,0"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OrvantaVideoDownloader" "UninstallString" '$\"$INSTDIR\Uninstall.exe$\"'

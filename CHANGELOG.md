@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - Orvanta branding
+
+- Renamed the product to Orvanta Video Downloader, under the Orvanta app family.
+- Updated the window, tray, About dialog, Windows metadata, setup, release filenames and browser companion branding.
+- Kept existing settings, queue/history, browser pairing and single-instance activation compatible with earlier builds.
+- Retained Ahmed Eladwy's developer credit and the existing text-free product icon.
+
 ## 1.0.0 - first public release
 
 See [release notes](docs/releases/v1.0.0.md) for the current compact interface, automatic playlist prefixes, file actions, and portable/installed distribution. Earlier v2/v3 headings below describe internal development iterations rather than public semantic versions.

@@ -9,5 +9,5 @@ if command -v aria2c >/dev/null; then args+=(--add-binary "$(command -v aria2c):
 if command -v ffprobe >/dev/null; then args+=(--add-binary "$(command -v ffprobe):."); else echo 'ffprobe required'; exit 1; fi
 runtime=$(command -v qjs || command -v deno || true)
 [ -n "$runtime" ] || { echo 'Install QuickJS (qjs) or Deno first'; exit 1; }
-.venv/bin/python -m PyInstaller --noconfirm --clean --onefile --name VideoDownloaderDesktop --collect-all yt_dlp --collect-all yt_dlp_ejs --add-binary "$runtime:." --exclude-module tkinter --exclude-module unittest --exclude-module curl_cffi --hidden-import engine "${args[@]}" app.py
-echo 'Built dist/VideoDownloaderDesktop. Linux system libraries and a graphical desktop are still required.'
+.venv/bin/python -m PyInstaller --noconfirm --clean --onefile --name OrvantaVideoDownloader --collect-all yt_dlp --collect-all yt_dlp_ejs --add-binary "$runtime:." --exclude-module tkinter --exclude-module unittest --exclude-module curl_cffi --hidden-import engine "${args[@]}" app.py
+echo 'Built dist/OrvantaVideoDownloader. Linux system libraries and a graphical desktop are still required.'

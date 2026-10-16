@@ -10,6 +10,7 @@ class SingleInstance(QObject):
         super().__init__(parent)
         directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
         self.lock=QLockFile(str(directory/'app-instance.lock'));self.lock.setStaleLockTime(0)
+        # Keep the legacy IPC name so old and Orvanta builds share one instance.
         self.name='orvanta-video-'+hashlib.sha256(str(directory.resolve()).lower().encode()).hexdigest()[:24]
         self.server=None;self.callback=None;self.pending=False
 

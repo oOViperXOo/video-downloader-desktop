@@ -1049,7 +1049,10 @@ class Window(QMainWindow):
         event.accept()
 
 def main():
+    # Stable storage identifiers preserve settings/history and activation with
+    # older releases. The visible product name is APP_NAME.
     app=QApplication(sys.argv); app.setApplicationName('VideoDownloaderDesktop'); app.setOrganizationName('VideoDownloaderDesktop'); app.setWindowIcon(QIcon(str(asset_path('assets/app-icon.ico')))); app.setStyle('Fusion')
+    app.setApplicationDisplayName(APP_NAME)
     app.setFont(QFont('Segoe UI',10))
     if '--smoke-test' in sys.argv:
         import tempfile
@@ -1058,6 +1061,7 @@ def main():
             w=Window(store); w.show()
             QTimer.singleShot(750, w.close)
             print('GUI_READY', flush=True)
+            print('PRODUCT_NAME=' + app.applicationDisplayName(), flush=True)
             print('STATE_DIRECTORY=' + str(default_state_directory()), flush=True)
             return app.exec()
     from single_instance import SingleInstance

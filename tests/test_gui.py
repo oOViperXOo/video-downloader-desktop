@@ -64,7 +64,9 @@ def test_malformed_entries_filtered(tmp_path):
 def test_generic_branding_and_settings_roundtrip(tmp_path):
     import app as appmod
     w=Window(Store(tmp_path))
-    assert 'YouTube' not in appmod.APP_NAME and w.windowTitle()==appmod.APP_NAME
+    assert appmod.APP_NAME=='Orvanta Video Downloader' and w.windowTitle()==appmod.APP_NAME
+    assert w.tray.toolTip()=='Orvanta Video Downloader — click to restore'
+    assert appmod.DEVELOPER=='Ahmed Eladwy' and appmod.DEVELOPER_EMAIL=='eladwy.ahmed@gmail.com'
     c=w.config()
     assert c['connections']==4 and c['aria2']=='off' and c['resume'] is True and c['cookies_browser']=='none'
     w.connections.setCurrentText('8'); w.aria2.setCurrentText('off'); w.cookies_browser.setCurrentText('firefox'); w.proxy.setText('socks5://10.0.0.5:1080')
