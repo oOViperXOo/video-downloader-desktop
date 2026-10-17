@@ -706,7 +706,10 @@ class Window(QMainWindow):
         descriptors=[]
         for job in self.jobs:
             config=dict(DEFAULTS);config.update(job['config']);job['config']=config
-            if str(config['quality']) not in ('best','2160','1440','1080','720','480','360','240','144','worst'):config['quality']='best'
+            if str(config['quality']) not in ('best','worst') and not str(config['quality']).isdigit():config['quality']='best'
+            if config.get('mode')=='video':
+                from engine import selected_video_quality
+                config['quality']=selected_video_quality(job.get('formats',[]),config['quality'])
             if str(config['bitrate']) not in ('64','96','128','160','192','256','320'):config['bitrate']='192'
             descriptors.append((job['id'],job,False))
         represented={(j.get('url',''),j.get('path') or j['config']['outdir'],j['status']) for j in self.jobs if j['status'] in ('done','skipped','error','cancelled')}

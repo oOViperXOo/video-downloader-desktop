@@ -170,7 +170,7 @@ def test_browser_extension_pairing_and_job_flow(tmp_path, monkeypatch):
     cfgj=w.jobs[0]['config']; assert cfgj['cookies_file']==str(cf) and cfgj['referer']
     ec=appmod.engine_config(cfgj); import engine; cmd=engine.build_command(ec,w.jobs[0]['url'])
     assert '--cookies' in cmd and '--referer' in cmd and 'a=b' not in ' '.join(cmd)       # cookie values never on the command line
-    assert appmod.engine_config(w.config())['archive_file']==appmod.engine_config(cfgj)['archive_file']
+    assert appmod.engine_config(dict(w.config(),quality=cfgj['quality']))['archive_file']==appmod.engine_config(cfgj)['archive_file']
     assert w.store.data['settings'].get('cookies_file','')==''  # browser context is not saved as a global setting
     w.jobs[0]['status']='done'; w.clear_finished(); assert not cf.exists()
     w.close(); w.deleteLater(); app.processEvents()
@@ -210,7 +210,7 @@ def test_bulk_start_respects_playlist_checks(tmp_path):
     w.close();w.deleteLater();app.processEvents()
 
 def test_mode_roundtrip_retains_valid_choices(tmp_path):
-    w=Window(Store(tmp_path));j=dict(id='a',title='t',url='https://vimeo.com/1',status='ready',config=dict(DEFAULTS),percent=0,error='');w.jobs.append(j);w.refresh_queue()
+    w=Window(Store(tmp_path));j=dict(formats=[{'height':1080,'vcodec':'avc1'}],id='a',title='t',url='https://vimeo.com/1',status='ready',config=dict(DEFAULTS),percent=0,error='');w.jobs.append(j);w.refresh_queue()
     for mode in ('Audio','Video','Audio','Video'):
         w.row_widgets[j['id']].mode.setCurrentText(mode);app.processEvents()
         q=w.row_widgets[j['id']].quality

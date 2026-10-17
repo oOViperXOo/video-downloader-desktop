@@ -51,10 +51,10 @@ def test_click_visible_labels_then_delete_without_forcing_focus(tmp_path):
 
 
 def test_inline_quality_popup_keeps_its_mouse_events(tmp_path):
-    w=Window(Store(tmp_path));w.show();w.jobs.append(job(0));w.refresh_queue();app.processEvents()
+    w=Window(Store(tmp_path));w.show();w.jobs.append(dict(job(0),formats=[{'height':1080,'vcodec':'avc1'},{'height':720,'vcodec':'avc1'}]));w.refresh_queue();app.processEvents()
     combo=w.row_widgets['0'].quality
     w.activateWindow();QTest.qWait(100);combo.setFocus();combo.showPopup();QTest.qWait(100)
-    index=combo.model().index(4,0)
+    index=combo.model().index(combo.findData('720'),0)
     QTest.mouseClick(combo.view().viewport(),Qt.LeftButton,pos=combo.view().visualRect(index).center())
     app.processEvents()
     assert w.jobs[0]['config']['quality']=='720'

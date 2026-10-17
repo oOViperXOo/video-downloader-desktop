@@ -491,7 +491,7 @@ def inspect_url(url: str, probe_first_for_heights: bool = True, timeout: int = 1
     """Inspect a video or playlist without downloading.
 
     Returns {"title", "is_playlist", "items":[{index,title,url,duration,id}], "heights":[...]}.
-    For playlists the heights come from probing the first item (one extra call).
+    Playlist entries are probed individually for their own available formats.
     """
     extra = list(extra_args or [])
     url,playlist_id=inspection_target(url)
@@ -507,14 +507,38 @@ def inspect_url(url: str, probe_first_for_heights: bool = True, timeout: int = 1
     items = [_item(i, r, url) for i, r in enumerate(rows, 1)]
     title = rows[0].get("playlist_title") or rows[0].get("playlist") or url
     heights: List[int] = []
-    if probe_first_for_heights and items and items[0]["url"]:
-        try:
-            first = _run_json_lines(["--ignore-config", "--dump-json", "--no-playlist", "--no-warnings"] + extra + ["--", items[0]["url"]], timeout)
-            heights = _heights(first[0])
-            items[0]["formats"] = normalized_formats(first[0])
-        except (EngineError, subprocess.TimeoutExpired):
-            pass
+    if probe_first_for_heights and items:
+        from concurrent.futures import ThreadPoolExecutor
+        def probe(item):
+            if item.get('formats') or not item.get('url'):
+                return [int(v) for v in available_video_qualities(item.get('formats',[])) if v.isdigit()]
+            try:
+                rows = _run_json_lines(["--ignore-config", "--dump-json", "--no-playlist", "--no-warnings"] + extra + ["--", item["url"]], timeout)
+                if rows:
+                    item['formats']=normalized_formats(rows[0])
+                    return _heights(rows[0])
+            except (EngineError, subprocess.TimeoutExpired):
+                pass
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            results=list(pool.map(probe,items))
+        heights=results[0] or []
     return {"title": title, "is_playlist": True, "heights": heights, "items": items}
+
+
+def available_video_qualities(formats):
+    """Actual downloadable video heights, with an automatic fallback if unknown."""
+    heights={int(f['height']) for f in formats if isinstance(f.get('height'),(int,float))
+             and f['height']>0 and f.get('vcodec') not in (None,'none')}
+    return [str(h) for h in sorted(heights,reverse=True)] or ['best']
+
+
+def selected_video_quality(formats, requested):
+    values=available_video_qualities(formats)
+    requested=str(requested)
+    if requested in values:return requested
+    candidates=[v for v in values if v.isdigit() and requested.isdigit() and int(v)<=int(requested)]
+    if candidates:return candidates[0]
+    return values[-1] if requested=='worst' or requested.isdigit() else values[0]
 
 
 def normalized_formats(info: dict) -> List[dict]:

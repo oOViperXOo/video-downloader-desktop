@@ -137,10 +137,16 @@ class CompactDownloadRow(QFrame):
         self.title=QLabel(job['title']);self.title.setTextFormat(Qt.PlainText);self.title.setObjectName('fileTitle');self.title.setMinimumWidth(0)
         self.title.setToolTip(job['title']+'\n'+job['url']);layout.addWidget(self.title)
         cfg=job['config'];audio=cfg.get('mode')=='audio'
-        self.quality=window.combo(['64 kbps','96 kbps','128 kbps','160 kbps','192 kbps','256 kbps','320 kbps'] if audio else ['best','2160','1440','1080','720','480','360','240','144','worst'],str(cfg.get('bitrate','192'))+' kbps' if audio else str(cfg.get('quality','1080')))
-        if not audio:window.label_quality(self.quality)
+        from engine import available_video_qualities
+        values=available_video_qualities(job.get('formats',[]))
+        self.quality=window.combo(['64 kbps','96 kbps','128 kbps','160 kbps','192 kbps','256 kbps','320 kbps'] if audio else values,str(cfg.get('bitrate','192'))+' kbps' if audio else str(cfg.get('quality','1080')))
+        if not audio:
+            window.label_quality(self.quality)
+            if values==['best']:
+                self.quality.setItemText(0,'Best available')
+                self.quality.setToolTip('Video resolutions could not be detected. The best available format will be used.')
         self.quality.setMinimumHeight(36);self.quality.setEnabled(not self.locked())
-        self.quality.currentTextChanged.connect(lambda value:window.update_job_choice(job,'quality',value))
+        self.quality.currentIndexChanged.connect(lambda _:window.update_job_choice(job,'quality',self.quality.currentText() if audio else self.quality.currentData()))
         quality=QWidget();box=QHBoxLayout(quality);box.setContentsMargins(5,3,5,3);box.addWidget(self.quality)
         self.progress=QProgressBar();self.progress.setTextVisible(False);self.progress.setFixedHeight(5);self.progress.setFixedWidth(55)
         self.detail=QLabel();self.detail.setObjectName('transferDetail');self.detail.setTextFormat(Qt.PlainText);self.detail.setMaximumWidth(180)

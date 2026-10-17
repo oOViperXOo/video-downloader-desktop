@@ -33,7 +33,7 @@ def test_add_inspection_queues_single_and_playlist_without_modal(tmp_path,monkey
     monkeypatch.setattr('features_ui.choose_formats',lambda *a:(_ for _ in ()).throw(AssertionError('Unexpected format dialog')))
     for identifiers in (['abcdefghijk'],['ABCDEFGHIJK','12345678901','ABCDEFGHIJK']):
         w.inspector=Process();w.inspection_cancelled=False;w.inspect_decoder=codecs.getincrementaldecoder('utf-8')()
-        w.inspect_output=json.dumps({'title':'Playlist','items':[{'id':identity,'title':identity,'url':'https://www.youtube.com/watch?v='+identity} for identity in identifiers]})
+        w.inspect_output=json.dumps({'title':'Playlist','items':[{'id':identity,'title':identity,'url':'https://www.youtube.com/watch?v='+identity,'formats':[{'height':720,'vcodec':'avc1'},{'height':360,'vcodec':'avc1'}]} for identity in identifiers]})
         w.inspected(0)
     assert len(w.jobs)==3 and all(j['status']=='ready' for j in w.jobs) and not w.workers
     row=w.row_widgets[w.jobs[0]['id']];assert row.quality.isVisible() and row.height()==44
@@ -69,3 +69,23 @@ def test_inspection_forwards_applied_browser_setting(tmp_path,monkeypatch):
     calls=[];monkeypatch.setattr(w,'command',lambda process,args:calls.append(args))
     w.inspect();assert calls and calls[0][-2:]==['--cookies-from-browser','firefox']
     w.inspector.deleteLater();w.inspector=None;finish(w)
+
+def test_row_quality_uses_own_formats_and_unknown_fallback(tmp_path):
+    w=Window(Store(tmp_path))
+    try:
+        for index, heights in enumerate(([720,540,360],[480],[])):
+            w.jobs.append({'id':str(index),'title':'Video','url':'https://example.com/'+str(index),
+                           'config':dict(DEFAULTS),'status':'ready',
+                           'formats':[{'height':height,'vcodec':'avc1'} for height in heights]})
+        w.refresh_queue()
+        for index,expected in enumerate((['720','540','360'],['480'],['best'])):
+            combo=w.row_widgets[str(index)].quality
+            assert [combo.itemData(i) for i in range(combo.count())]==expected
+            assert w.jobs[index]['config']['quality']==expected[0]
+        combo=w.row_widgets['0'].quality
+        combo.setCurrentIndex(1);app.processEvents()
+        assert w.jobs[0]['config']['quality']=='540'
+        w.refresh_queue()
+        assert w.jobs[0]['config']['quality']=='540'
+    finally:
+        finish(w)

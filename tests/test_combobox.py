@@ -35,12 +35,12 @@ def test_dependent_format_resolution_and_audio_choices_remain_consistent(tmp_pat
     assert job['config']['format_id']=='22' and job['config']['quality']=='720' and job['estimated_bytes']==200
     assert w.row_widgets['combo'].format is row.format
     assert not row.format.view().isVisible()
-    row=w.row_widgets['combo'];row.quality.setCurrentText('1080p');app.processEvents()
+    row=w.row_widgets['combo'];row.quality.setCurrentText('360p');app.processEvents()
     assert job['config']['format_id']=='' and job['selected_format']=={} and job['estimated_bytes'] is None
     row=w.row_widgets['combo'];row.mode.setCurrentText('Audio');app.processEvents()
     row=w.row_widgets['combo'];assert 'kbps' in row.quality.currentText() and row.container.itemText(0)=='MP3' and not job['config']['convert_mp4']
     row.container.setCurrentText('M4A');app.processEvents();assert job['config']['audio_format']=='m4a'
-    row=w.row_widgets['combo'];row.mode.setCurrentText('Video');app.processEvents();assert w.row_widgets['combo'].quality.currentText()=='1080p'
+    row=w.row_widgets['combo'];row.mode.setCurrentText('Video');app.processEvents();assert w.row_widgets['combo'].quality.currentText()=='360p'
     w.close();w.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete)
 
 

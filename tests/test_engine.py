@@ -318,3 +318,28 @@ def test_real_error_captured(local_clip, tmp_path):
 def test_real_inspect(local_clip):
     r = engine.inspect_url(local_clip)
     assert r["items"][0]["title"] == "clip"
+
+def test_playlist_probes_each_video_without_sharing_qualities(monkeypatch):
+    def fake(args, timeout=120):
+        if '--flat-playlist' in args:
+            return [{'id':str(i),'title':str(i),'url':'https://example.com/'+str(i),'playlist_index':i} for i in (1,2,3)]
+        if args[-1].endswith('/3'):
+            raise engine.EngineError('Unavailable')
+        height=720 if args[-1].endswith('/1') else 480
+        return [{'formats':[{'format_id':'v','height':height,'vcodec':'avc1','acodec':'aac'}]}]
+    monkeypatch.setattr(engine,'_run_json_lines',fake)
+    result=engine.inspect_url('https://example.com/playlist')
+    assert [engine.available_video_qualities(i['formats']) for i in result['items']]==[['720'],['480'],['best']]
+
+
+def test_video_qualities_ignore_audio_and_deduplicate():
+    assert engine.available_video_qualities([
+        {'height':720,'vcodec':'avc1'}, {'height':720,'vcodec':'vp9'},
+        {'height':540,'vcodec':'avc1'}, {'height':1080,'vcodec':'none'}
+    ])==['720','540']
+    formats=[{'height':720,'vcodec':'avc1'},{'height':360,'vcodec':'avc1'}]
+    assert engine.selected_video_quality(formats,'1080')=='720'
+    assert engine.selected_video_quality(formats,'480')=='360'
+    assert engine.selected_video_quality(formats,'144')=='360'
+    assert engine.selected_video_quality(formats,'worst')=='360'
+    assert engine.selected_video_quality(formats,'best')=='720'

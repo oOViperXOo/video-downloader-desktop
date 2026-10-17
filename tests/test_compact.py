@@ -73,7 +73,7 @@ def test_audio_choices_are_edited_in_queue(tmp_path):
 
 def test_row_focus_resume_and_truthful_completion(tmp_path):
     window=Window(Store(tmp_path)); window.show()
-    job=dict(id='focus',title='Video',url='https://example.com/video',status='paused',percent=25,config=dict(DEFAULTS),error='')
+    job=dict(formats=[{'height':1080,'vcodec':'avc1'},{'height':720,'vcodec':'avc1'}],id='focus',title='Video',url='https://example.com/video',status='paused',percent=25,config=dict(DEFAULTS),error='')
     window.jobs.append(job); window.expanded_jobs.add('focus'); window.refresh_queue(); app.processEvents()
     row=window.row_widgets['focus']; assert row.primary.text()=='Resume'
     window.activateWindow(); row.quality.setFocus(); app.processEvents()
