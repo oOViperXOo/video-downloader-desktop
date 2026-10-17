@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4
+
+- Each video now shows only its available resolutions in the quality dropdown.
+- Playlist videos are checked individually for available formats.
+- Videos whose resolutions cannot be detected use Best available.
+
 ## 1.0.3
 
 - Deleting downloaded files now removes their queue/history rows; failed deletions retain their records.
